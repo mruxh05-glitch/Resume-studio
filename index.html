@@ -91,6 +91,66 @@
   .no-print{}
 
   /* ==================================================== */
+  /* TEMPLATE CHOOSER                                      */
+  /* ==================================================== */
+  #view-templates{
+    display:none; min-height:100vh; background:var(--paper); padding:56px 40px 80px;
+  }
+  .tpl-choose-wrap{ max-width:1180px; margin:0 auto; }
+  .tpl-choose-back{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); background:none;
+    border:none; cursor:pointer; padding:0 0 20px; font-family:'Inter',sans-serif;
+  }
+  .tpl-choose-back:hover{ color:var(--ink); }
+  .tpl-choose-head .start-eyebrow{ font-size:12.5px; color:var(--cobalt); font-weight:600; letter-spacing:0.03em; margin-bottom:12px; }
+  .tpl-choose-head h1{
+    font-family:'Source Serif 4', serif; font-size:34px; line-height:1.15; font-weight:600; letter-spacing:-0.01em;
+    margin:0 0 10px;
+  }
+  .tpl-choose-head p{ font-size:14.5px; line-height:1.6; color:var(--muted); margin:0 0 36px; max-width:640px; }
+
+  .tpl-grid{
+    display:grid; grid-template-columns:repeat(5, 1fr); gap:22px;
+  }
+  @media (max-width: 1100px){ .tpl-grid{ grid-template-columns:repeat(3, 1fr); } }
+  @media (max-width: 720px){ .tpl-grid{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width: 480px){ .tpl-grid{ grid-template-columns:1fr; } }
+
+  .tpl-card{
+    background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden; cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease; text-align:left;
+    display:flex; flex-direction:column;
+  }
+  .tpl-card:hover{ transform:translateY(-3px); box-shadow:0 14px 28px -10px rgba(28,27,25,0.18); border-color:var(--tc-accent, var(--accent)); }
+  .tpl-card-thumb{
+    height:150px; background:#fbfaf7; border-bottom:1px solid var(--line); position:relative; overflow:hidden;
+    padding:14px 16px;
+  }
+  .tpl-card-thumb .tc-bar{ height:5px; border-radius:2px; background:#e3e0d8; margin-bottom:6px; }
+  .tpl-card-thumb .tc-name{ height:9px; width:55%; background:#2a2926; border-radius:2px; margin-bottom:6px; }
+  .tpl-card-thumb .tc-rule{ height:2px; width:26%; background:var(--tc-accent, var(--accent)); margin-bottom:8px; }
+  .tpl-card-meta{ padding:12px 14px 15px; }
+  .tpl-card-meta .tc-title{ font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:3px; }
+  .tpl-card-meta .tc-sub{ font-size:11px; color:var(--muted); }
+
+  /* thumbnail layout shapes */
+  .tc-shape-modern .tc-name{ width:60%; }
+  .tc-shape-modern .tc-bar{ width:88%; }
+  .tc-shape-classic{ text-align:center; }
+  .tc-shape-classic .tc-name{ margin:0 auto 6px; }
+  .tc-shape-classic .tc-rule{ margin:0 auto 8px; }
+  .tc-shape-classic .tc-bar{ width:80%; margin-left:auto; margin-right:auto; }
+  .tc-shape-minimal .tc-bar{ width:70%; background:#ece9e1; }
+  .tc-shape-minimal .tc-name{ width:45%; }
+  .tc-shape-creative{ display:flex; gap:10px; height:100%; padding:0; }
+  .tc-shape-creative .tc-side{ width:34%; background:var(--tc-accent, var(--accent)); height:100%; }
+  .tc-shape-creative .tc-main{ flex:1; padding:14px 14px 0 0; }
+  .tc-shape-executive .tc-band{ height:22px; background:var(--tc-accent, var(--accent)); margin:-14px -16px 12px; }
+  .tc-shape-compact{ display:flex; gap:10px; padding:0; }
+  .tc-shape-compact .tc-side{ width:32%; border-right:1px solid var(--line); padding:14px 8px 0 14px; }
+  .tc-shape-compact .tc-main{ flex:1; padding:14px 14px 0 0; }
+
+  /* ==================================================== */
   /* APP SHELL                                             */
   /* ==================================================== */
   #view-app{ display:none; }
@@ -421,6 +481,19 @@
   </div>
 </div>
 
+<!-- ============ TEMPLATE CHOOSER ============ -->
+<div id="view-templates">
+  <div class="tpl-choose-wrap">
+    <button class="tpl-choose-back" id="back-to-start-from-templates" type="button">&larr; Back</button>
+    <div class="tpl-choose-head">
+      <div class="start-eyebrow">CHOOSE A STARTING POINT</div>
+      <h1>Pick a template to begin with.</h1>
+      <p>Every option below is fully editable once you're inside — you can switch the layout, colors, spacing, and fonts at any time, so don't overthink this pick.</p>
+    </div>
+    <div class="tpl-grid" id="template-grid"></div>
+  </div>
+</div>
+
 <!-- ============ BUILDER APP ============ -->
 <div id="view-app">
   <div class="app">
@@ -566,12 +639,17 @@
 
   document.getElementById('start-cta').addEventListener('click', function(){
     document.getElementById('view-start').style.display = 'none';
-    document.getElementById('view-app').style.display = 'block';
+    document.getElementById('view-templates').style.display = 'block';
+    window.scrollTo(0,0);
+  });
+  document.getElementById('back-to-start-from-templates').addEventListener('click', function(){
+    document.getElementById('view-templates').style.display = 'none';
+    document.getElementById('view-start').style.display = 'flex';
     window.scrollTo(0,0);
   });
   document.getElementById('back-to-start').addEventListener('click', function(){
     document.getElementById('view-app').style.display = 'none';
-    document.getElementById('view-start').style.display = 'flex';
+    document.getElementById('view-templates').style.display = 'block';
     window.scrollTo(0,0);
   });
 
@@ -625,6 +703,73 @@
     { id:'executive', name:'Executive', sub:'Serif · color band' },
     { id:'compact',   name:'Compact',   sub:'Dense · ATS-friendly' }
   ];
+
+  // Ten curated starting points shown on the template-chooser screen.
+  // Each maps to one of the six layout engines paired with a color palette,
+  // so the picker offers real visual variety while reusing the render code.
+  var TEMPLATE_STYLES = [
+    { key:'modern-cobalt',    template:'modern',    paletteId:'cobalt',   name:'Modern',            sub:'Sans · accent rules · Cobalt' },
+    { key:'classic-ink',      template:'classic',   paletteId:'slate',    name:'Classic',           sub:'Serif · centered · Slate' },
+    { key:'minimal-moss',     template:'minimal',   paletteId:'moss',     name:'Minimal',           sub:'Sans · quiet grid · Moss' },
+    { key:'creative-navy',    template:'creative',  paletteId:'navygold', name:'Creative',          sub:'Two column · dark rail · Navy & Gold' },
+    { key:'executive-burg',   template:'executive', paletteId:'burgundy', name:'Executive',         sub:'Serif · color band · Burgundy' },
+    { key:'compact-teal',     template:'compact',   paletteId:'teal',     name:'Compact',           sub:'Dense · ATS-friendly · Teal' },
+    { key:'modern-plum',      template:'modern',    paletteId:'plum',     name:'Modern — Plum',     sub:'Sans · accent rules · Plum' },
+    { key:'classic-clay',     template:'classic',   paletteId:'clay',     name:'Classic — Clay',    sub:'Serif · centered · Clay' },
+    { key:'minimal-slate',    template:'minimal',   paletteId:'slate',    name:'Minimal — Slate',   sub:'Sans · quiet grid · Slate' },
+    { key:'executive-navy',   template:'executive', paletteId:'navygold', name:'Executive — Navy',  sub:'Serif · color band · Navy & Gold' }
+  ];
+
+  function paletteAccent(id){
+    for(var i=0;i<PALETTES.length;i++){ if(PALETTES[i].id === id) return PALETTES[i].accent; }
+    return '#2b4c8c';
+  }
+
+  function templateThumbHTML(shape){
+    if(shape === 'creative'){
+      return '<div class="tc-shape-creative"><div class="tc-side"></div><div class="tc-main"><div class="tc-name"></div><div class="tc-bar"></div><div class="tc-bar" style="width:70%"></div><div class="tc-rule"></div><div class="tc-bar" style="width:80%"></div><div class="tc-bar" style="width:60%"></div></div></div>';
+    }
+    if(shape === 'compact'){
+      return '<div class="tc-shape-compact"><div class="tc-side"><div class="tc-name" style="width:80%"></div><div class="tc-bar" style="width:70%"></div><div class="tc-bar" style="width:60%"></div></div><div class="tc-main"><div class="tc-bar" style="width:90%"></div><div class="tc-rule"></div><div class="tc-bar" style="width:75%"></div><div class="tc-bar" style="width:65%"></div></div></div>';
+    }
+    if(shape === 'executive'){
+      return '<div class="tc-shape-executive"><div class="tc-band"></div><div class="tc-name"></div><div class="tc-bar" style="width:85%"></div><div class="tc-rule"></div><div class="tc-bar" style="width:75%"></div><div class="tc-bar" style="width:60%"></div></div>';
+    }
+    if(shape === 'classic'){
+      return '<div class="tc-shape-classic"><div class="tc-name" style="width:50%"></div><div class="tc-rule"></div><div class="tc-bar" style="width:88%"></div><div class="tc-bar" style="width:70%"></div><div class="tc-bar" style="width:80%"></div></div>';
+    }
+    if(shape === 'minimal'){
+      return '<div class="tc-shape-minimal"><div class="tc-name"></div><div class="tc-bar" style="margin-top:10px;width:60%"></div><div class="tc-rule"></div><div class="tc-bar" style="width:82%"></div><div class="tc-bar" style="width:66%"></div></div>';
+    }
+    // modern (default)
+    return '<div class="tc-shape-modern"><div class="tc-name"></div><div class="tc-bar" style="width:70%"></div><div class="tc-rule"></div><div class="tc-bar" style="width:90%"></div><div class="tc-bar" style="width:78%"></div><div class="tc-bar" style="width:84%"></div></div>';
+  }
+
+  function renderTemplateChooser(){
+    var wrap = document.getElementById('template-grid');
+    wrap.innerHTML = '';
+    TEMPLATE_STYLES.forEach(function(s){
+      var accent = paletteAccent(s.paletteId);
+      var card = el(
+        '<div class="tpl-card" style="--tc-accent:'+accent+'">' +
+          '<div class="tpl-card-thumb">'+templateThumbHTML(s.template)+'</div>' +
+          '<div class="tpl-card-meta"><div class="tc-title">'+esc(s.name)+'</div><div class="tc-sub">'+esc(s.sub)+'</div></div>' +
+        '</div>'
+      );
+      card.addEventListener('click', function(){
+        state.template = s.template;
+        state.paletteId = s.paletteId;
+        document.getElementById('view-templates').style.display = 'none';
+        document.getElementById('view-app').style.display = 'block';
+        window.scrollTo(0,0);
+        renderFormatPicker();
+        renderTabs();
+        renderSwatches();
+        renderSheet();
+      });
+      wrap.appendChild(card);
+    });
+  }
 
   var MARGIN_PRESETS = {
     narrow: { v:'40px', h:'42px' },
@@ -1175,6 +1320,7 @@
   bindBasics();
   renderExpForm();
   renderEduForm();
+  renderTemplateChooser();
   renderFormatPicker();
   renderTabs();
   renderSwatches();
